@@ -1,3 +1,4 @@
+import matplotlib
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import pandas as pd
@@ -11,6 +12,7 @@ import cv2
 
 import warnings
 warnings.filterwarnings("ignore")
+matplotlib.use('agg')
 
 import sys
 
@@ -125,10 +127,10 @@ def get_edge(img):
     return cv2.Canny(blur, lower, upper)
 
 
-def _kmeans(grad, n_clusters=2):
+def _kmeans(mat, n_clusters=2):
     km = KMeans(n_clusters=n_clusters)
-    km.fit(grad)
-    km.predict(grad)
+    km.fit(mat)
+    km.predict(mat)
     return km.labels_
 
 
@@ -181,13 +183,16 @@ def detect_img_corners(grad, starts):
 
 
     # Solve for the intersections of these lines
+    # ax = b
     points = np.zeros((1, 2))
     a = np.vstack((b0, -b1)).T
     for i0 in [s00, s01]:
         for i1 in [s10, s11]:
             b = i0[:, np.newaxis] - i1[:, np.newaxis]
-            x = np.linalg.solve(a, b)
-            x = i1 - x[1] * b1
+            theta = np.linalg.solve(a, b)
+
+            # Recreate point using parameter
+            x = i1 - theta[1] * b1
             points = np.vstack((points, x[np.newaxis, :]))
     return points[1:, :]
 
@@ -208,10 +213,11 @@ def calc_scale_factor(ceil, starts):
 
 
 def normalise_corners(corners):
-    """Create cornes that are perpendicular to each other"""
+    """Create cornes that are in the same direction"""
     corner_arr = corners.flatten()
     temp = np.vstack((corner_arr, np.zeros_like(corner_arr))).T
 
+    # Find the four numbers to define each corner
     labels = _kmeans(temp, 4)
 
     d = {}
