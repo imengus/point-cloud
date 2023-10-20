@@ -300,7 +300,7 @@ def main():
     if len(sys.argv) > 1:
         PATH = sys.argv[1]
     else:
-        PATH = 'a.xyz'
+        PATH = 'data/examples/a.xyz'
     print(detect_corners(PATH))
 
 if __name__ == "__main__":

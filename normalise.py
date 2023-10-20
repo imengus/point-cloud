@@ -1,4 +1,4 @@
-from pc import *
+from main import *
 
 def normalise(PATH):
     """Detect positions of corners relative to each other"""
@@ -13,7 +13,7 @@ def main():
     if len(sys.argv) > 1:
         PATH = sys.argv[1]
     else:
-        PATH = 'a.xyz'
+        PATH = 'data/examples/a.xyz'
     normalise(PATH)
 
 if __name__ == "__main__":

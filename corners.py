@@ -1,4 +1,4 @@
-from pc import *
+from main import *
 
 def detect_corners(PATH):
     """Detect positions of corners relative to each other"""
