@@ -2,7 +2,7 @@
 ### 0. Loading the data
 Notice how the data is at an angle.
 
-![](plots/boss_room_angle.png)
+![](plots/init.png)
 
 ### 1. Detecting edges
 By collapsing the data onto two dimensions and Gaussian blurring, a neat contour can be obtained.
@@ -35,7 +35,7 @@ To convert the point values to metres, we must first rotate the 3d point cloud u
 
 Collapsing to one dimensions in x and y, histogram peaks will indicate the presence of walls.
 
-![](plots/along_x_hist.png)
+![](plots/hist.png)
 
 The x and y differences between the relative positions of these peaks give rise to the dimensions of the room:
 `array([3.74314508, 7.08169256])`.
@@ -44,21 +44,11 @@ Calculating also the relative differences between the points, the ratio between 
 
 Due to the non-determinism of the probabilistic Hough transform, I have observed ~5cm differences between runs.
 
-```
-array([[0.  , 1.1 ],
-       [0.29, 1.1 ],
-       [6.73, 1.1 ],
-       [7.2 , 1.1 ],
-       [0.  , 3.99],
-       [0.29, 3.99],
-       [6.73, 3.99],
-       [7.2 , 3.99],
-       [0.  , 4.22],
-       [0.29, 4.22],
-       [6.73, 4.22],
-       [7.2 , 4.22],
-       [0.  , 4.78],
-       [0.29, 4.78],
-       [6.73, 4.78],
-       [7.2 , 4.78]])
-```
+### 5. Reconstruction
+First we build a network comprising all allowable connections between corners (nodes), and the distance between them. From here, we can write an algorithm that visits each node and connects to the nearest unvisited one. When reaching the next node involves a change in direction, a true corner is identified.
+
+![](plots/essential.png)
+
+Finally, having all the information, we can reconstruct the ceiling profile:
+
+![](plots/reconstructed.png)
